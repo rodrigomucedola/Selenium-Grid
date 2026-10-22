@@ -1,0 +1,53 @@
+name: Testes Selenium Grid
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  testes:
+    runs-on: windows-latest
+
+    steps:
+
+      - name: Baixar código do projeto
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+
+      - name: Instalar dependências Python
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+
+      - name: Baixar Selenium Server
+        shell: powershell
+        run: |
+          Invoke-WebRequest `
+            -Uri "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.51.0/selenium-server-4.51.0.jar" `
+            -OutFile "selenium-server.jar"
+
+      - name: Iniciar Selenium Grid
+        shell: powershell
+        run: |
+          Start-Process java `
+            -ArgumentList "-jar selenium-server.jar standalone --port 4444" `
+            -WindowStyle Hidden
+
+          Start-Sleep -Seconds 10
+
+      - name: Executar testes automatizados
+        run: |
+          pytest tests/test_aula_selenium_grid.py -v
