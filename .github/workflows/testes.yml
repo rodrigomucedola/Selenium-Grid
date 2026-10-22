@@ -54,3 +54,11 @@ jobs:
       - name: Executar testes automatizados
         run: |
           pytest tests/test_aula_selenium_grid.py -v
+
+      - name: Salvar evidências dos testes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidencias-testes
+          path: evidencias/
+          if-no-files-found: warn
