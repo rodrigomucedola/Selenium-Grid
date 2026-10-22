@@ -10,7 +10,8 @@ jobs:
   testes:
     runs-on: windows-latest
 
-    SWIFT_TEST_CEP: "06509019"
+    env:
+      SWIFT_TEST_CEP: "05128-200"
 
     steps:
 
